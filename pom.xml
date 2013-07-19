@@ -4,7 +4,7 @@
 	<groupId>com.surevine.chat</groupId>
 	<artifactId>openfire-cas-plugin</artifactId>
 	<packaging>jar</packaging>
-	<name>Surevine Openfire CAS Authentication Plugin</name>
+	<name>Openfire CAS Authentication Provider</name>
 	<version>1.0.3-SNAPSHOT</version>
 	<description>
 		The Surevine Openfire CAS Authentication Plugin is an extension to Openfire that provides authentication services through CAS.
