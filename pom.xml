@@ -46,7 +46,7 @@
 				<version>3.10.3</version>
 			</dependency>
 			<dependency>
-				<groupId>org.jasig.cas</groupId>
+				<groupId>org.jasig.cas.client</groupId>
 				<artifactId>cas-client-core</artifactId>
 				<version>3.3.3</version>
 			</dependency>
@@ -70,7 +70,7 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.jasig.cas</groupId>
+			<groupId>org.jasig.cas.client</groupId>
 			<artifactId>cas-client-core</artifactId>
 		</dependency>
 		<!-- T E S T D E P E N D E N C I E S -->
@@ -88,21 +88,25 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>4.5</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>fluent-hc</artifactId>
 			<version>4.5</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient-cache</artifactId>
 			<version>4.5</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpmime</artifactId>
 			<version>4.5</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<build>
@@ -204,7 +208,7 @@
 				<version>2.5.2</version>
 				<configuration>
 					<findbugsXmlOutput>true</findbugsXmlOutput>
-					<findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+					<!--<findbugsXmlWithMessages>true</findbugsXmlWithMessages>-->
 					<xmlOutput>true</xmlOutput>
 					<failOnError>true</failOnError>
 				</configuration>
