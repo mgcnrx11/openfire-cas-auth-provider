@@ -101,9 +101,9 @@ public class CASAuthProvider implements AuthProvider {
             throw new ConnectionException();
         }
 
-        // Connect to CAS and validate the proxy ticket.
-        // The password field contains the CAS proxy ticket.
-        ticketValidator.authenticateCASProxyTicket(username, password);
+        // Connect to CAS and validate the ticket.
+        // The password field contains the CAS ticket.
+        ticketValidator.authenticateCASTicket(username, password);
     }
 
     /**

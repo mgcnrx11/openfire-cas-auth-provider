@@ -20,6 +20,7 @@ package com.surevine.chat.openfire.auth;
 
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.validation.Assertion;
+import org.jasig.cas.client.validation.Cas10TicketValidator;
 import org.jasig.cas.client.validation.Cas20ProxyTicketValidator;
 import org.jasig.cas.client.validation.TicketValidationException;
 import org.jivesoftware.openfire.auth.UnauthorizedException;
@@ -29,6 +30,11 @@ import org.jivesoftware.util.Log;
  * Validates CAS Proxy Tickets for <code>CASAuthProvider</code>.
  */
 public class CASAuthTicketValidator {
+
+    /**
+     * The CAS 1.0 ticket validator.
+     */
+    private final Cas10TicketValidator ticketValidator;
 
     /**
      * The CAS proxy ticket validator.
@@ -41,17 +47,36 @@ public class CASAuthTicketValidator {
     private final String serviceUrl;
 
     /**
+     * Indicate use proxy validator whether or not.
+     */
+    private final boolean isUseProxyValidator;
+
+    /**
      * Construct a new ticket validator with a configuration provider and proxy
      * validator.
      *
-     * @param config         The configration provider.
      * @param proxyValidator The CAS proxy validator to use.
+     * @param serviceUrl     The service Url to validate.
      */
-    public CASAuthTicketValidator(
-            final Cas20ProxyTicketValidator proxyValidator,
-            final String serviceUrl) {
+    public CASAuthTicketValidator(final Cas20ProxyTicketValidator proxyValidator, final String serviceUrl) {
         this.proxyValidator = proxyValidator;
         this.serviceUrl = serviceUrl;
+        this.ticketValidator = null;
+        this.isUseProxyValidator = true;
+    }
+
+    /**
+     * Construct a new ticket validator with a configuration provider and proxy
+     * validator.
+     *
+     * @param ticketValidator The CAS 1.0 validator to use.
+     * @param serviceUrl      The service Url to validate.
+     */
+    public CASAuthTicketValidator(final Cas10TicketValidator ticketValidator, final String serviceUrl) {
+        this.ticketValidator = ticketValidator;
+        this.serviceUrl = serviceUrl;
+        this.proxyValidator = null;
+        this.isUseProxyValidator = false;
     }
 
     /**
@@ -59,19 +84,19 @@ public class CASAuthTicketValidator {
      * the method returns, otherwise an <code>UnauthorizedException</code> is
      * thrown.
      *
-     * @param username    The username.
-     * @param proxyTicket The CAS proxy ticket.
+     * @param username The username.
+     * @param ticket   The CAS ticket.
      * @throws org.jivesoftware.openfire.auth.UnauthorizedException If the username and password do not match any existing user.
      */
-    public void authenticateCASProxyTicket(final String username,
-                                           final String proxyTicket) throws UnauthorizedException {
+    public void authenticateCASTicket(final String username,
+                                      final String ticket) throws UnauthorizedException {
         Assertion assertion = null;
         AttributePrincipal principal = null;
 
         if (Log.isDebugEnabled()) {
             Log
                     .debug("CASAuthProvider: Contact CAS and validate proxy ticket '"
-                            + proxyTicket
+                            + ticket
                             + "' for user '"
                             + username
                             + "' and service '" + serviceUrl + "'...");
@@ -79,7 +104,11 @@ public class CASAuthTicketValidator {
 
         // Connect to CAS and validate the proxy ticket
         try {
-            assertion = proxyValidator.validate(proxyTicket, serviceUrl);
+            if (!this.isUseProxyValidator) {
+                assertion = ticketValidator != null ? ticketValidator.validate(ticket, serviceUrl) : null;
+            } else {
+                assertion = proxyValidator != null ? proxyValidator.validate(ticket, serviceUrl) : null;
+            }
         } catch (final TicketValidationException tve) {
             Log.info("CASAuthProvider: TicketValidationException:" + tve);
             throw new UnauthorizedException(tve);
@@ -106,18 +135,24 @@ public class CASAuthTicketValidator {
             throw new UnauthorizedException(message);
         }
 
-        if (!username.equalsIgnoreCase(principalName)) {
-            final String message = "CAS ticket is not valid for user:'"
-                    + username + "'.";
-            Log.info("CASAuthProvider: " + message);
-            throw new UnauthorizedException(message);
-        }
+//        if (!username.equalsIgnoreCase(principalName)) {
+//            final String message = "CAS ticket is not valid for user:'"
+//                    + username + "'.";
+//            Log.info("CASAuthProvider: " + message);
+//            throw new UnauthorizedException(message);
+//        }
 
         // The user is now authenticated.
         if (Log.isDebugEnabled()) {
             Log.debug("CASAuthProvider: The user '" + username
                     + "' is now authenticated.");
         }
+        Log.info("CASAuthProvider: The user '" + username
+                + "' is now authenticated.");
+    }
+
+    public Cas10TicketValidator getTicketValidator() {
+        return ticketValidator;
     }
 
     /**
@@ -136,6 +171,11 @@ public class CASAuthTicketValidator {
      */
     public String getServiceUrl() {
         return serviceUrl;
+    }
+
+
+    public boolean isUseProxyValidator() {
+        return isUseProxyValidator;
     }
 
 }

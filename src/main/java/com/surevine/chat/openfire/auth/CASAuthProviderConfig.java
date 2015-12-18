@@ -44,6 +44,12 @@ public class CASAuthProviderConfig {
     private static final String PROXY_CLIENT = "casAuthProvider.proxyClient";
 
     /**
+     * Key corresponding to the validator.
+     */
+    private static final String VALIDATOR = "casAuthProvider.validator";
+
+
+    /**
      * Map of configuration properties.
      */
     private Map<String, String> configProperties;
@@ -111,5 +117,14 @@ public class CASAuthProviderConfig {
         }
 
         return proxyChain;
+    }
+
+    /**
+     * Get the Validator which use to validate the CAS ticket. <br />
+     * There are only two option: Cas10TicketValidator and Cas20ProxyTicketValidator.
+     * @return validator's class name
+     */
+    public String getValidator() {
+        return configProperties.get(VALIDATOR);
     }
 }

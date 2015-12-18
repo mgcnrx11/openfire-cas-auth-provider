@@ -18,6 +18,7 @@
 
 package com.surevine.chat.openfire.auth;
 
+import org.jasig.cas.client.validation.Cas10TicketValidator;
 import org.jasig.cas.client.validation.Cas20ProxyTicketValidator;
 import org.jasig.cas.client.validation.ProxyList;
 
@@ -39,14 +40,19 @@ public class CASAuthTicketValidatorFactory {
             throw new IllegalArgumentException("CAS configuration not defined");
         }
 
-        Cas20ProxyTicketValidator proxyValidator = new Cas20ProxyTicketValidator(
-                config.getCASServerUrlPrefix());
+        String validatorName = config.getValidator();
 
-        proxyValidator.setAllowedProxyChains(new ProxyList(config
-                .getProxyChain()));
+        if (validatorName.equalsIgnoreCase("Cas20ProxyTicketValidator")) {
+            Cas20ProxyTicketValidator proxyValidator = new Cas20ProxyTicketValidator(config.getCASServerUrlPrefix());
 
-        return new CASAuthTicketValidator(proxyValidator, config
-                .getServiceName());
+            proxyValidator.setAllowedProxyChains(new ProxyList(config.getProxyChain()));
+
+            return new CASAuthTicketValidator(proxyValidator, config.getServiceName());
+        } else if (validatorName.equalsIgnoreCase("Cas10TicketValidator")) {
+            Cas10TicketValidator ticketValidator = new Cas10TicketValidator(config.getCASServerUrlPrefix());
+            return new CASAuthTicketValidator(ticketValidator, config.getServiceName());
+        }
+        throw new IllegalArgumentException("CAS Validator is not defined");
     }
 
 }
