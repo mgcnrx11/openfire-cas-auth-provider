@@ -29,9 +29,10 @@ import static org.junit.Assert.assertEquals;
 
 public class CASAuthProviderConfigTest {
 
-    private static String TEST_CAS_SERVER_URL_PREFIX = "http://test.cas.server/cas/";
+    private static String TEST_CAS_SERVER_URL_PREFIX = "http://192.168.52.176:14562/cas/";
     private static String TEST_SERVICE_NAME = "http://test.chat.server/chat/";
     private static String TEST_PROXY_CLIENT = "http://test.chat.server/chat/proxy";
+    private static String TEST_CAS10_VALIDATOR = "Cas10TicketValidator";
 
     /**
      * Class under test
@@ -47,9 +48,9 @@ public class CASAuthProviderConfigTest {
     public void setUp() throws Exception {
         jiveProperties = new HashMap<String, String>();
 
-        jiveProperties.put("casAuthProvider.casServerUrlPrefix",
-                TEST_CAS_SERVER_URL_PREFIX);
+        jiveProperties.put("casAuthProvider.casServerUrlPrefix", TEST_CAS_SERVER_URL_PREFIX);
         jiveProperties.put("casAuthProvider.serviceName", TEST_SERVICE_NAME);
+        jiveProperties.put("casAuthProvider.validator", TEST_CAS10_VALIDATOR);
 
         casAuthProviderConfig = new CASAuthProviderConfig(jiveProperties);
     }
@@ -77,8 +78,7 @@ public class CASAuthProviderConfigTest {
     @Test
     public void testGetCASServerUrlPrefix() {
         assertEquals("getCASServerUrlPrefix() returns the wrong string",
-                TEST_CAS_SERVER_URL_PREFIX, casAuthProviderConfig
-                        .getCASServerUrlPrefix());
+                TEST_CAS_SERVER_URL_PREFIX, casAuthProviderConfig.getCASServerUrlPrefix());
     }
 
     ;
@@ -92,6 +92,17 @@ public class CASAuthProviderConfigTest {
     public void testGetServiceName() {
         assertEquals("getServiceName() returns the wrong string",
                 TEST_SERVICE_NAME, casAuthProviderConfig.getServiceName());
+    }
+
+    /**
+     * Test the getValidator method
+     *
+     * @see CASAuthProviderConfig#getValidator()
+     */
+    @Test
+    public void testGetValidator() {
+        assertEquals("getValidator() returns the wrong string",
+                TEST_CAS10_VALIDATOR, casAuthProviderConfig.getValidator());
     }
 
     /**

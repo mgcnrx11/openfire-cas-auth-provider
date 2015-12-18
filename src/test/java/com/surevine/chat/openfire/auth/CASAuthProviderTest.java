@@ -71,7 +71,7 @@ public class CASAuthProviderTest {
         doThrow(
                 new org.jivesoftware.openfire.auth.UnauthorizedException(
                         "Could not authenticate user")).when(ticketValidator)
-                .authenticateCASProxyTicket(AUTH_FAILURE_USERNAME,
+                .authenticateCASTicket(AUTH_FAILURE_USERNAME,
                         AUTH_FAILURE_PASSWORD);
 
         authProvider.ticketValidator = ticketValidator;
